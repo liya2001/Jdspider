@@ -16,18 +16,20 @@ NEWSPIDER_MODULE = 'jdspider.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'jdspider (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) ' \
+             'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+             'Chrome/49.0.2623.87 Safari/537.36'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 3.4
+DOWNLOAD_DELAY = 7
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -40,10 +42,17 @@ DOWNLOAD_DELAY = 3.4
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4',
-    'Accept-Encoding': 'gzip, deflate, sdch',
-    'Connection': 'keep-alive'
+    #'Host': 'jd.com',
+    'Connection': 'keep-alive',
+    'Pragma': 'no-cache',
+    'Cache-Control': 'max-age=0',
+    'Accept': '*/*',
+    #'Origin': 'https://www.jd.com',
+    'X-Requested-With': 'XMLHttpRequest',
+    'User-Agent': USER_AGENT,
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
 }
 
 # Enable or disable spider middlewares
@@ -60,9 +69,14 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+EXTENSIONS = {
+    'scrapy.extensions.telnet.TelnetConsole': None,
+    'scrapy.extensions.closespider.CloseSpider': 400,
+    'scrapy.extensions.statsmailer.StatsMailer': 500,
+}
+
+CLOSESPIDER_ITEMCOUNT = 10000
+STATSMAILER_RCPTS = ['liyabupt@163.com']
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
@@ -90,3 +104,12 @@ DEFAULT_REQUEST_HEADERS = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+#mail setting
+MAIL_FROM = '1737643065@qq.com'
+MAIL_HOST = 'smtp.qq.com'
+MAIL_PORT = 587
+MAIL_USER = '1737643065@qq.com'
+MAIL_PASS = 'wekwkpxrdhwgbaaa'
+MAIL_TLS = True
+MAIL_SSL = False
