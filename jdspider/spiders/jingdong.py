@@ -3,6 +3,8 @@
 
 import re
 import json
+import requests
+import random
 from scrapy.spiders import CrawlSpider
 from scrapy.selector import Selector
 from scrapy.http import Request, FormRequest
@@ -71,6 +73,25 @@ class JingdongSpider(CrawlSpider):
             
             #item_id = JdspiderItem(item_id=item_id)
             #yield item_id
+            
+    def get_proxy(self):
+        """
+        获取代理
+        """
+        try:
+            r = requests.get('http://127.0.0.1:8000/?sites=JD&types=0')
+            if r.ok:
+                ip_ports = json.loads(r.text)
+                ip_port = random.choice(ip_ports)
+                ip = ip_port[0]
+                port = ip_port[1]
+                proxies={
+                    'http':'http://%s:%s'%(ip,port),
+                    'https':'http://%s:%s'%(ip,port)
+                }
+        except requests.exceptions.RequestException:
+            proxies={}
+        return proxies
         
     def get_rate_num(self, response):
         """
@@ -94,13 +115,15 @@ class JingdongSpider(CrawlSpider):
         # else:
             # rate_num = int(rate_summary["goodCount"])
         # print rate_num
-        item_id = '2967927'
+        item_id = '2402692'
         
-        for i in range(0, 20000):    #rate_num/10):
+        for i in range(0, 12000):    #rate_num/10):
+            proxies = self.get_proxy
             rates_url = 'https://club.jd.com/comment/productPageComments.action?callback=fetchJSON_comment&productId=%s&score=%d&sortType=5&page=%d&pageSize=10' % (item_id, score, i)
             yield Request(
                 rates_url,
                 headers=HEADER,
+                meta{'proxy':proxies}
                 callback=self.rate_parse,
             )
 
